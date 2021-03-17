@@ -424,7 +424,7 @@ def classificateAPI(filename):  # API入口
 
 
 
-def init():
+def init_cnn():
     global TypeClassificationCNN
     global PaintingClassificationCNN
     global PhotoClassificationCNN
@@ -464,6 +464,7 @@ def main():
 
 
 if __name__ == "__main__":
+    init_cnn()
     main()
 else:
-    init()
+    pass

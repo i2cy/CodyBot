@@ -13,14 +13,20 @@ from api.remote_watchdog_api import *
 
 global Cody
 
+CONFIG = "configs/Cody_QQ.json"
+
 class CodyAPI:
-    def __init__(self, configFile="Cody_QQ.json", heartbeatClass=None):
-        config = json.loads(open(configFile,"rb").read())
+    def __init__(self, config="Cody_QQ.json", heartbeatClass=None):
+        if isinstance(config, str):
+            config = json.loads(open(config,"rb").read())
         self.url = config["URL"]
         self.id = config["ID"]
         self.qqid = config["QQID"]
-        self.nice = config["Nick"]
-        self.managingGroups = config["ManagingGroups"]
+        self.nick = config["Nick"]
+        try:
+            self.managingGroups = config["ManagingGroups"]
+        except:
+            pass
         self.sessionID = None
 
         heartbeatClass.serverAddr = (config["HeartbeatHost"],
@@ -249,11 +255,11 @@ class CodyAPI:
         self.removeSession()
 
 
-def init():
+def init_qqbot():
     print("initializing Cody API...")
 
     global Cody
-    Cody = CodyAPI(configFile="configs/Cody_QQ.json",
+    Cody = CodyAPI(config=CONFIG,
                    heartbeatClass=heartbeatControl())
     print("QQbot HTTP API url: {}".format(Cody.url))
     print("QQbot QQID: {}".format(Cody.qqid))
@@ -274,6 +280,6 @@ def init():
 
 
 if __name__ == "__main__":
-    init()
+    init_qqbot()
 else:
-    init()
+    pass

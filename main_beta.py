@@ -172,6 +172,8 @@ def check_loop():
 
 def main():
     global LIVE
+    init_cnn()
+    init_qqbot()
     print("checking cache path")
     path_fixer(CACHE_DIR)
     eventLoop = threading.Thread(target=event_loop)
