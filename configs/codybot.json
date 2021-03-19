@@ -1,0 +1,32 @@
+{
+  "qqapi": {
+    "httpapi_address": "127.0.0.1:10429",
+    "bot_id": 1,
+    "nickname": "Cody",
+    "qq_id": 88888888,
+    "watchdog": {
+      "host": "127.0.0.1",
+      "port": 10430,
+      "dynkey": "__BasiCABCKey.",
+      "QQframe_timeout": 20
+    }
+  },
+  "bot_configs": {
+    "managing_groups": [
+      8888888
+    ],
+    "OP_groups": [
+      8888888
+    ],
+    "OP_users": [
+      8888888
+    ],
+    "database": "data/users.db",
+    "log": "log/codybot.log"
+  },
+  "lewdityapi": {
+    "nsfw_painting_model": "models/NSFW_painting_model.h5",
+    "nsfw_photo_model": "models/NSFW_photo_model.h5",
+    "classification_model": "models/pic_classification_model.h5"
+  }
+}

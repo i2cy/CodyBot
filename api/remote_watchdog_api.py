@@ -7,6 +7,7 @@
 import socket
 import time
 import threading
+from i2cylib.utils.logger import *
 
 
 KILL_COMMAND = "taskkill /IM 小栗子框架-快载.exe"
@@ -49,7 +50,10 @@ class timeKey: # 64-Bits Live key generator/matcher
 
 class heartbeatControl:
     def __init__(self, key=None, feedThreshold=30,
-                 host="127.0.0.1", port=10430):
+                 host="127.0.0.1", port=10430, log=None):
+        if log is None:
+            log = logger()
+        self.logger = log
         self.serverAddr = (host, port)
         self.timeKey = key
         if self.timeKey == None:
@@ -103,23 +107,24 @@ class heartbeatControl:
     def restartQQframe(self):
         global KILL_COMMAND
         global START_COMMADN
-        print("restarting QQ frame...")
+        head = "[qqbotapi] [watchdog]"
+        self.logger.WARNING("{} restarting QQ frame...".format(head))
         for i in range(3):
             res = self.send_command(KILL_COMMAND)
             time.sleep(1)
-        print("killing status: {}".format(res))
+        self.logger.DEBUG("{} killing status: {}".format(head, res))
         time.sleep(1)
         res = self.send_command(START_COMMADN)
-        print("starting status: {}".format(res))
-        print("QQ frame restarted")
+        self.logger.DEBUG("{} starting status: {}".format(head, res))
+        self.logger.INFO("{} QQ frame restarted".format(head))
         time.sleep(10)
-        print("reallocating session...")
+        self.logger.DEBUG("{} reallocating session...".format(head))
         self.qqAPI.sessionID = None
         try:
             sessionID = self.qqAPI.allocateSession()
-            print("allocated QQbot session ID: {}".format(str(sessionID)))
+            self.logger.INFO("{} allocated QQbot session ID: {}".format(head, str(sessionID)))
         except Exception as err:
-            print("failed to allocate session, {}".format(err))
+            self.logger.ERROR("{} failed to allocate session, {}".format(head, err))
 
 
     def heartbeatLoop_thread(self):
