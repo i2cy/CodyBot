@@ -16,7 +16,8 @@ global Cody
 CONFIG = "configs/Cody_QQ.json"
 
 class CodyAPI:
-    def __init__(self, config="Cody_QQ.json", heartbeatClass=None):
+    def __init__(self, config="Cody_QQ.json", heartbeatClass=None,
+                 watchdog=None):
         if isinstance(config, str):
             config = json.loads(open(config,"rb").read())
         self.url = config["URL"]
@@ -29,16 +30,23 @@ class CodyAPI:
             pass
         self.sessionID = None
 
-        heartbeatClass.serverAddr = (config["HeartbeatHost"],
-                                     config["HeartbeatPort"])
-        heartbeatClass.timeKey = config["TimeKey"]
-        heartbeatClass.feedThreshold = config["QQframeRestartThreshold"]
+        if not watchdog is None:
+            heartbeatClass = watchdog
 
-        heartbeatClass.timeKeyClass = timeKey(heartbeatClass.timeKey)
+        try:
+            heartbeatClass.serverAddr = (config["HeartbeatHost"],
+                                         config["HeartbeatPort"])
+            heartbeatClass.timeKey = config["TimeKey"]
+            heartbeatClass.feedThreshold = config["QQframeRestartThreshold"]
 
-        heartbeatClass.set_qqAPI(self)
+            heartbeatClass.timeKeyClass = timeKey(heartbeatClass.timeKey)
 
-        self.heartbeatClass = heartbeatClass
+            heartbeatClass.set_qqAPI(self)
+
+            self.heartbeatClass = heartbeatClass
+            self.watchdog = heartbeatClass
+        except:
+            pass
 
 
     def mute(self, uin, mutetime, group):
@@ -88,7 +96,10 @@ class CodyAPI:
         try:
             res = json.loads(res)
             res = res["events"]
-            self.heartbeatClass.feed()
+            try:
+                self.heartbeatClass.feed()
+            except:
+                pass
         except Exception:
             print("failed to decode events: {}".format(res))
             res = []

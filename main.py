@@ -33,7 +33,9 @@ DEFAULT_CONFIG = {
         "managing_groups":  [8888888],
         "OP_groups":        [8888888],
         "OP_users":         [8888888],
-        "database":         "data/users.db",
+        "msg_database":     "data/users.db",
+        "pic_database":     "data/pictures.db",
+        "file_database":    "data/files.db",
         "log":              "log/codybot.log"
     },
     "lewdityapi": {
@@ -43,10 +45,38 @@ DEFAULT_CONFIG = {
     }
 }
 
+# GLOBALS
 global LOG, DB, CONF, BOT
 TypeClassificationCNN = None
 PaintingClassificationCNN = None
 PhotoClassificationCNN = None
+
+# GLOBALS
+
+class UserDB:
+
+    def __init__(self, msg_db, pic_db, file_db):
+        self.msg_db = sqlib.SqliteDB(msg_db)
+        self.pic_db = sqlib.SqliteDB(pic_db)
+        self.file_db = sqlib.SqliteDB(file_db)
+
+    def new_table(self, name, type=0):
+        if type == 0:  # msg table
+            table = sqlib.SqlTable(name)
+            table.add_column("TIME", sqlib.SqlDtype.INTEGER)
+            table.add_column("QQID", sqlib.SqlDtype.INTEGER)
+            table.add_column("GROUPID", sqlib.SqlDtype.INTEGER)
+            table.add_column("NICKNAME", sqlib.SqlDtype.TEXT)
+            table.add_column("MSG", sqlib.SqlDtype.TEXT)
+            table.add_limit(0, sqlib.Sqlimit.PRIMARY_KEY)
+        elif type == 1:  # picture table
+            table = sqlib.SqlTable(name)
+
+
+
+
+
+
 
 def write_conf(path, data):
     with open(path, "w") as f:
@@ -71,7 +101,9 @@ def main():
 
     # path safety check
     paths = [CONFIG_PATH,
-             CONF["bot_configs"]["database"],
+             CONF["bot_configs"]["msg_database"],
+             CONF["bot_configs"]["pic_database"],
+             CONF["bot_configs"]["file_database"],
              CONF["bot_configs"]["log"],
              CONF["lewdityapi"]["nsfw_painting_model"],
              CONF["lewdityapi"]["nsfw_photo_model"],
